@@ -1,5 +1,5 @@
 import React from "react";
-import { pipe, share, make, mergeMap, merge } from "wonka";
+import { pipe, share, make, mergeMap, merge, tap } from "wonka";
 import {
   createClient,
   Provider,
@@ -120,15 +120,22 @@ const customExchange = ({ forward }) => {
   };
 };
 
+const simpleExchange = ({ forward }) => {
+  return (operations$) => {
+    return forward(
+      pipe(
+        operations$,
+        tap((op) => {
+          console.log({ op });
+        })
+      )
+    );
+  };
+};
+
 const client = createClient({
   url: "https://trygql.formidable.dev/graphql/basic-pokedex",
-  exchanges: [
-    dedupExchange,
-    cacheExchange,
-    fetchExchange,
-    debugExchange,
-    customExchange,
-  ],
+  exchanges: [fetchExchange, simpleExchange],
   maskTypename: true, // but, contain __typename ...
 });
 
