@@ -13,15 +13,11 @@ const POKEMONS_QUERY = gql`
 const PokemonList = () => {
   const [result] = useQuery({ query: POKEMONS_QUERY });
 
-  const { data, fetching, error } = result;
+  const { data } = result;
   console.log({ data });
 
   return (
     <div>
-      {fetching && <p>Loading...</p>}
-
-      {error && <p>Oh no... {error.message}</p>}
-
       {data && (
         <ul>
           {data.pokemons.map((pokemon) => (
